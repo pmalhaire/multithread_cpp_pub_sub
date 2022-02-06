@@ -1,5 +1,5 @@
 #ifndef __SYNC_QUEUE
-#define __ SYNC_QUEUE
+#define __SYNC_QUEUE
 
 #include <queue>
 #include <chrono>
