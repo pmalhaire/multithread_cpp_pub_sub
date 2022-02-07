@@ -3,40 +3,44 @@
 
 #include <queue>
 #include <chrono>
+#include <memory>
 #include <condition_variable>
 
 template <typename T>
 class SynchronizedQueue
 {
-    std::queue<T> queue_;
+    std::queue<std::shared_ptr<T>> queue_;
     std::mutex mutex_;
     std::condition_variable condvar_;
 
-    typedef std::lock_guard<std::mutex> lock;
-    typedef std::unique_lock<std::mutex> ulock;
+    using lock = std::lock_guard<std::mutex>;
+    using ulock = std::unique_lock<std::mutex>;
 
 public:
-    void push(T const &val)
+    void push(std::shared_ptr<T> const &val)
     {
-        lock l(mutex_);             // prevents multiple pushes corrupting queue_
-        bool wake = queue_.empty(); // we may need to wake consumer
-        queue_.push(val);
+        bool wake;
+        {
+            lock l(mutex_);             // prevents multiple pushes corrupting queue_
+            bool wake = queue_.empty(); // we may need to wake consumer
+            queue_.push(val);
+        }
         if (wake)
             condvar_.notify_one();
     }
 
-    T pop()
+    std::shared_ptr<T> pop()
     {
         ulock u(mutex_);
         while (queue_.empty())
             condvar_.wait(u);
         // now queue_ is non-empty and we still have the lock
-        T retval = queue_.front();
+        std::shared_ptr<T> retval = queue_.front();
         queue_.pop();
         return retval;
     }
 
-    T pop_for(const std::chrono::duration<int64_t, std::milli> timeout)
+    std::shared_ptr<T> pop_for(const std::chrono::duration<int64_t, std::milli> timeout)
     {
         ulock u(mutex_);
         // if queue is empty wait for an object to be pushed
@@ -44,7 +48,7 @@ public:
         {
             if (condvar_.wait_for(u, timeout) == std::cv_status::no_timeout)
             {
-                T retval = queue_.front();
+                std::shared_ptr<T> retval = queue_.front();
                 queue_.pop();
                 return retval;
             }
@@ -54,7 +58,7 @@ public:
                 return nullptr;
             }
         }
-        T retval = queue_.front();
+        std::shared_ptr<T> retval = queue_.front();
         queue_.pop();
         return retval;
     }

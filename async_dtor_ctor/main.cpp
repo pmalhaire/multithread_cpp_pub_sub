@@ -4,7 +4,7 @@
 using namespace std::chrono_literals;
 #include "sync_queue.hpp"
 
-//to be able to follow object creation
+// to be able to follow object creation
 //#define SHOW_CTOR
 //#deine SHOW_DTOR
 class MyClass
@@ -33,8 +33,8 @@ std::ostream &operator<<(std::ostream &os, MyClass const &m)
     return os << "MyClass" << m.m_ts;
 }
 
-SynchronizedQueue<std::shared_ptr<MyClass>> grab_queue;
-SynchronizedQueue<std::shared_ptr<MyClass>> process_queue;
+SynchronizedQueue<MyClass> grab_queue;
+SynchronizedQueue<MyClass> process_queue;
 constexpr auto timeout = 10ms;
 
 bool stop_grab = false;
@@ -49,13 +49,13 @@ int grab()
         T img = grab_queue.pop_for(timeout);
         if (img != nullptr)
         {
-            //std::cout << "grab:" << img->m_ts << std::endl;
+            // std::cout << "grab:" << img->m_ts << std::endl;
             process_queue.push(img);
-            //std::cout << "grab done" << std::endl;
+            // std::cout << "grab done" << std::endl;
         }
         else
         {
-            //std::cout << "grab timeout" << std::endl;
+            // std::cout << "grab timeout" << std::endl;
         }
     }
     return 0;
@@ -75,7 +75,7 @@ int process()
         }
         else
         {
-            //std::cout << "process timeout" << std::endl;
+            // std::cout << "process timeout" << std::endl;
         }
     }
     return 0;

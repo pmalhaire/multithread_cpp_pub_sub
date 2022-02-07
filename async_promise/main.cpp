@@ -19,7 +19,7 @@ public:
     };
 };
 
-SynchronizedQueue<std::shared_ptr<MyClass>> queue;
+SynchronizedQueue<MyClass> queue;
 
 template <typename T>
 int work_and_push(T x)

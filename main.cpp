@@ -2,7 +2,7 @@
 #include <thread>
 #include <memory>
 #include <chrono>
-//for 1.000.000 print
+// for 1.000.000 print
 #include <locale>
 using namespace std::chrono_literals;
 #include "sync_queue.hpp"
@@ -28,11 +28,12 @@ using myclass_shared = std::shared_ptr<MyClass>;
 class Graber
 {
 public:
-    Graber(SynchronizedQueue<myclass_shared> &grab_queue,
-           SynchronizedQueue<myclass_shared> &process_queue,
+    Graber(SynchronizedQueue<MyClass> &grab_queue,
+           SynchronizedQueue<MyClass> &process_queue,
            const std::chrono::duration<int64_t, std::milli> timeout)
         : m_grab_queue(grab_queue), m_process_queue(process_queue),
-          m_pop_timeout(timeout), m_thread([this] { this->grab(); }){};
+          m_pop_timeout(timeout), m_thread([this]
+                                           { this->grab(); }){};
     ~Graber()
     {
         stop();
@@ -56,9 +57,9 @@ private:
     const std::chrono::duration<int64_t, std::milli> m_pop_timeout;
     u_int64_t m_grab_count = 0;
     // grab queue as input queue
-    SynchronizedQueue<myclass_shared> &m_grab_queue;
+    SynchronizedQueue<MyClass> &m_grab_queue;
     // process queue as output queue
-    SynchronizedQueue<myclass_shared> &m_process_queue;
+    SynchronizedQueue<MyClass> &m_process_queue;
     bool m_stop = false;
     // do what is needed with data
     void work() {}
@@ -75,12 +76,12 @@ private:
                 work();
                 this->m_process_queue.push(img);
                 ++m_grab_count;
-                //std::cout << "grab done" << std::endl;
+                // std::cout << "grab done" << std::endl;
             }
             else
             {
                 timeout();
-                //std::cout << "grab timeout" << std::endl;
+                // std::cout << "grab timeout" << std::endl;
             }
         }
         return;
@@ -91,10 +92,11 @@ private:
 class Processor
 {
 public:
-    Processor(SynchronizedQueue<myclass_shared> &process_queue,
+    Processor(SynchronizedQueue<MyClass> &process_queue,
               const std::chrono::duration<int64_t, std::milli> timeout)
         : m_process_queue(process_queue), m_pop_timeout(timeout),
-          m_thread([this] { this->process(); }){};
+          m_thread([this]
+                   { this->process(); }){};
     ~Processor()
     {
         stop();
@@ -117,7 +119,7 @@ private:
     std::thread m_thread;
     const std::chrono::duration<int64_t, std::milli> m_pop_timeout;
     u_int64_t m_process_count = 0;
-    SynchronizedQueue<myclass_shared> &m_process_queue;
+    SynchronizedQueue<MyClass> &m_process_queue;
     bool m_stop = false;
     // do what is needed with data
     void work() {}
@@ -133,12 +135,12 @@ private:
             {
                 work();
                 ++m_process_count;
-                //std::cout << "proess done" << std::endl;
+                // std::cout << "proess done" << std::endl;
             }
             else
             {
                 timeout();
-                //std::cout << "process timeout" << std::endl;
+                // std::cout << "process timeout" << std::endl;
             }
         }
         return;
@@ -156,8 +158,8 @@ int main()
     constexpr auto wait_interval_between_runs = 0ms;
 
     // initialize queues
-    SynchronizedQueue<myclass_shared> grab_queue;
-    SynchronizedQueue<myclass_shared> process_queue;
+    SynchronizedQueue<MyClass> grab_queue;
+    SynchronizedQueue<MyClass> process_queue;
 
     // initialize and lauch worker threads
     Graber grabber(grab_queue, process_queue, 10ms);
