@@ -32,8 +32,7 @@ public:
            SynchronizedQueue<MyClass> &process_queue,
            const std::chrono::duration<int64_t, std::milli> timeout)
         : m_grab_queue(grab_queue), m_process_queue(process_queue),
-          m_pop_timeout(timeout), m_thread([this]
-                                           { this->grab(); }){};
+          m_pop_timeout(timeout), m_thread([this] { this->grab(); }){};
     ~Graber()
     {
         stop();
@@ -95,8 +94,7 @@ public:
     Processor(SynchronizedQueue<MyClass> &process_queue,
               const std::chrono::duration<int64_t, std::milli> timeout)
         : m_process_queue(process_queue), m_pop_timeout(timeout),
-          m_thread([this]
-                   { this->process(); }){};
+          m_thread([this] { this->process(); }){};
     ~Processor()
     {
         stop();
