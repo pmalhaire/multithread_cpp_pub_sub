@@ -29,6 +29,10 @@ public:
             condvar_.notify_one();
     }
 
+    int size() {
+        return queue_.size();
+    }
+
     std::shared_ptr<T> pop()
     {
         ulock u(mutex_);

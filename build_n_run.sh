@@ -1,2 +1,4 @@
 #!/bin/bash
-g++ --std=c++17 -o test -lpthread main.cpp && ./test
+set -e
+g++ --std=c++17 -o test  main.cpp -lpthread 
+./test
