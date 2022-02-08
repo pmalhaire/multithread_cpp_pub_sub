@@ -44,6 +44,7 @@ private:
     // grab from m_subscribe_queue to process queue
     void loop()
     {
+        std::cout << "PubSub started" << std::endl;
         while (!this->m_stop)
         {
             std::shared_ptr<S> src = this->m_subscribe_queue.pop_for(m_sub_timeout);

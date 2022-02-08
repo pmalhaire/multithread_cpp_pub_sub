@@ -1,4 +1,5 @@
 #!/bin/bash
 set -e
-g++ --std=c++17 -o test  main.cpp -lpthread 
-./test
+cmake -B build
+make -C build
+./build/test_pub_sub

@@ -22,11 +22,12 @@ public:
         bool wake;
         {
             lock l(mutex_);             // prevents multiple pushes corrupting queue_
-            bool wake = queue_.empty(); // we may need to wake consumer
+            bool wake = queue_.empty();      // we may need to wake consumer
             queue_.push(val);
         }
-        if (wake)
-            condvar_.notify_one();
+        if (wake) {
+            condvar_.notify_all();
+        }
     }
 
     int size() {
@@ -50,14 +51,7 @@ public:
         // if queue is empty wait for an object to be pushed
         if (queue_.empty())
         {
-            if (condvar_.wait_for(u, timeout) == std::cv_status::no_timeout)
-            {
-                std::shared_ptr<T> retval = queue_.front();
-                queue_.pop();
-                return retval;
-            }
-            else
-            {
+            if (condvar_.wait_for(u, timeout) != std::cv_status::no_timeout){
                 // if timeout is reached return nullptr
                 return nullptr;
             }
