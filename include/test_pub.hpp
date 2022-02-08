@@ -9,27 +9,27 @@
 
 using namespace std::chrono_literals;
 
-
 class MyOutClass
 {
 public:
     MyOutClass() : m_ts(std::chrono::duration_cast<std::chrono::nanoseconds>(
-                         std::chrono::system_clock::now().time_since_epoch())
-                         .count()){};
+                            std::chrono::system_clock::now().time_since_epoch())
+                            .count()){};
     ~MyOutClass(){};
     const int64_t m_ts;
 };
 
-class MyPublisher:public Publisher<MyOutClass> {
+class MyPublisher : public Publisher<MyOutClass>
+{
 public:
     using Publisher::Publisher;
     // this is empty but can be used in a class
 };
 
-void testPub(u_int64_t input_per_run, 
-u_int64_t run_count,
-const std::chrono::duration<int64_t, std::milli> wait_interval_between_runs
-) {
+void testPub(u_int64_t input_per_run,
+             u_int64_t run_count,
+             const std::chrono::duration<int64_t, std::milli> wait_interval_between_runs)
+{
     // initialize queues
     SynchronizedQueue<MyOutClass> pub_queue;
 
@@ -70,10 +70,11 @@ const std::chrono::duration<int64_t, std::milli> wait_interval_between_runs
     while (true)
     {
         auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::system_clock::now().time_since_epoch());
-        if ( now - start > timeout) {
+            std::chrono::system_clock::now().time_since_epoch());
+        if (now - start > timeout)
+        {
             std::cerr << "something is wrong test is too long >" << timeout.count() << "ms" << std::endl;
-            exit(1); 
+            exit(1);
         }
         if (poped_msg > run_count * input_per_run)
         {
@@ -85,11 +86,12 @@ const std::chrono::duration<int64_t, std::milli> wait_interval_between_runs
             break;
         }
         // pop until timeout
-        while (pub_queue.pop_for(10ms) != nullptr){
+        while (pub_queue.pop_for(10ms) != nullptr)
+        {
             ++poped_msg;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(wait_interval));
-        std::cout << "published messages received:" << +poped_msg << "/" << run_count * input_per_run << " queue size:" << pub_queue.size()  << std::endl;
+        std::cout << "published messages received:" << +poped_msg << "/" << run_count * input_per_run << " queue size:" << pub_queue.size() << std::endl;
     }
     auto stop = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::system_clock::now().time_since_epoch());
@@ -97,12 +99,12 @@ const std::chrono::duration<int64_t, std::milli> wait_interval_between_runs
     auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 
     std::cout << "published messages:" << +poped_msg;
-    if ( elapsed_ms > 0 ){
+    if (elapsed_ms > 0)
+    {
         // do not divide by 0
-        std::cout <<" in "
-              << elapsed_ms
-              << "ms rate:" << +poped_msg / elapsed_ms * 1000 << "msg/sec";
+        std::cout << " in "
+                  << elapsed_ms
+                  << "ms rate:" << +poped_msg / elapsed_ms * 1000 << "msg/sec";
     }
     std::cout << std::endl;
-
 }

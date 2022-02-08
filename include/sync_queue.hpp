@@ -22,15 +22,18 @@ public:
         bool wake;
         {
             lock l(mutex_);             // prevents multiple pushes corrupting queue_
-            bool wake = queue_.empty();      // we may need to wake consumer
+            bool wake = queue_.empty(); // we may need to wake consumer
             queue_.push(val);
         }
-        if (wake) {
-            condvar_.notify_all();
+        if (wake)
+        {
+            // note one only subscriber if several it should be notify all
+            condvar_.notify_one();
         }
     }
 
-    int size() {
+    int size()
+    {
         return queue_.size();
     }
 
@@ -44,14 +47,15 @@ public:
         queue_.pop();
         return retval;
     }
-
+    // pop_for try to pop for timeout returns nullptr if timeout fails
     std::shared_ptr<T> pop_for(const std::chrono::duration<int64_t, std::milli> timeout)
     {
         ulock u(mutex_);
         // if queue is empty wait for an object to be pushed
         if (queue_.empty())
         {
-            if (condvar_.wait_for(u, timeout) != std::cv_status::no_timeout){
+            if (condvar_.wait_for(u, timeout) != std::cv_status::no_timeout)
+            {
                 // if timeout is reached return nullptr
                 return nullptr;
             }
