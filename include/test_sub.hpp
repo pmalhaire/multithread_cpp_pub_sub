@@ -19,14 +19,14 @@ public:
     const int64_t m_ts;
 };
 
-class MySubscriber:public Subscriber<MyInClass> {
+class MySubscriber:public Subscriber<MySubscriber, MyInClass> {
 public:
     using Subscriber::Subscriber;
-    void work(std::shared_ptr<MyInClass> img) override{
+    void work(std::shared_ptr<MyInClass> img){
         m_message_count++;
     }
 
-    void timeout() override{
+    void timeout(){
         std::cerr << "MySubscriber timeout" << std::endl;
     }
     u_int64_t message_count(){

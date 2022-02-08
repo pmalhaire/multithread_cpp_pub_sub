@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <thread>
 #include <memory>
@@ -11,14 +12,14 @@ class Publisher
 public:
     Publisher(SynchronizedQueue<T> &publish_queue)
         : m_publish_queue(publish_queue){};
-    ~Publisher()
-    {
-    };
+    ~Publisher(){};
 
     // publish is blocking
-    void publish(std::shared_ptr<T> img){
+    void publish(std::shared_ptr<T> img)
+    {
         this->m_publish_queue.push(img);
     }
+
 private:
     SynchronizedQueue<T> &m_publish_queue;
 };
