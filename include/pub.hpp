@@ -5,6 +5,7 @@
 #include <chrono>
 #include "sync_queue.hpp"
 
+// SYNC_QUEUE v1.0.0 github.com:pmalhaire/multithread_cpp_pub_sub.git
 // Publisher creates data to be published
 template <typename T>
 class Publisher

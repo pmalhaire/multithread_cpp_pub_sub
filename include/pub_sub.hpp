@@ -1,8 +1,10 @@
+#pragma once
 #include <thread>
 #include <memory>
 #include <chrono>
 #include "sync_queue.hpp"
 
+// SYNC_QUEUE v1.0.0 github.com:pmalhaire/multithread_cpp_pub_sub.git
 // PubSub subscribe to subscribe_queue and publish to publish_queue
 // methods must be implemented
 // std::shared_ptr<P> work(std::shared_ptr<S>)

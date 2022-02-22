@@ -7,6 +7,7 @@
 #include "pub_sub.hpp"
 #include "sub.hpp"
 #include "sync_queue.hpp"
+#include <gtest/gtest.h>
 
 using namespace std::chrono_literals;
 
@@ -196,7 +197,7 @@ void testPubSub(u_int64_t input_per_run,
         exit(1);
     }
     auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
-    //pubsub.stop();
+    //pubsub.stop(); optional
     std::cout << "published messages:" << +sub.message_count();
     if (elapsed_ms > 0)
     {
@@ -206,4 +207,8 @@ void testPubSub(u_int64_t input_per_run,
                   << "ms rate:" << +sub.message_count() / elapsed_ms * 1000 << "msg/sec";
     }
     std::cout << std::endl;
+    auto elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+
+    ASSERT_LT((run_count * input_per_run) / elapsed_us, 100)
+        << "Message rate to slow expected than 100us" << (run_count * input_per_run) / elapsed_us;
 }

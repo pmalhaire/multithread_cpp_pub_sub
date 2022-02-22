@@ -12,12 +12,22 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+
 include_directories(./include)
+include_directories(./tests)
 FILE(GLOB_RECURSE SRC_FILES ./src/*.c*)
 
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
+include(GoogleTest)
+
+enable_testing()
 
 target_link_libraries(${PROJECT_NAME}
-                        pthread)
+                        pthread
+                        gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(${PROJECT_NAME})
+
 

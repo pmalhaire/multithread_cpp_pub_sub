@@ -5,6 +5,7 @@
 #include <atomic>
 #include "sync_queue.hpp"
 
+// SYNC_QUEUE v1.0.0 github.com:pmalhaire/multithread_cpp_pub_sub.git
 // Subscriber subscribe to subscribe_queue and do work with input data
 // methods must be implemented
 // void work(std::shared_ptr<S>)

@@ -1,6 +1,5 @@
-#ifndef __SYNC_QUEUE
-#define __SYNC_QUEUE
-
+#pragma once
+// SYNC_QUEUE v1.0.0 github.com:pmalhaire/multithread_cpp_pub_sub.git
 #include <queue>
 #include <chrono>
 #include <memory>
@@ -37,16 +36,6 @@ public:
         return queue_.size();
     }
 
-    std::shared_ptr<T> pop()
-    {
-        ulock u(mutex_);
-        while (queue_.empty())
-            condvar_.wait(u);
-        // now queue_ is non-empty and we still have the lock
-        std::shared_ptr<T> retval = queue_.front();
-        queue_.pop();
-        return retval;
-    }
     // pop_for try to pop for timeout returns nullptr if timeout fails
     std::shared_ptr<T> pop_for(const std::chrono::duration<int64_t, std::milli> timeout)
     {
@@ -65,4 +54,3 @@ public:
         return retval;
     }
 };
-#endif

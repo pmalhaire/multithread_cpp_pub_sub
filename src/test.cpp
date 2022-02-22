@@ -8,23 +8,24 @@
 
 using namespace std::chrono_literals;
 
-int main()
+TEST(async_queue, subscriber)
 {
-    std::cout << "# Test subscriber" << std::endl;
     testSub(1, 1, 0ms);
     testSub(1, 1, 10ms);
     testSub(10, 10, 10ms);
     testSub(1000, 1000, 0ms);
+}
 
-    std::cout << std::endl
-              << "# Test publisher" << std::endl;
+TEST(async_queue, publisher)
+{
     testPub(1, 1, 0ms);
     testPub(1, 1, 10ms);
     testPub(10, 10, 10ms);
     testPub(1000, 1000, 0ms);
+}
 
-    std::cout << std::endl
-              << "# Test publisher subscriber" << std::endl;
+TEST(async_queue, publisher_subscriber)
+{
     testPubSub(1, 1, 1ms, 10ms);
     testPubSub(1, 1, 10ms, 10ms);
     testPubSub(10, 10, 1ms, 10ms);
