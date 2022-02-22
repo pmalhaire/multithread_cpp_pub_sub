@@ -5,8 +5,14 @@
 #include "test_sub.hpp"
 #include "test_pub.hpp"
 #include "test_pub_sub.hpp"
+#include "test_full.hpp"
 
 using namespace std::chrono_literals;
+
+TEST(async_queue, full)
+{
+    testFull();
+}
 
 TEST(async_queue, subscriber)
 {
